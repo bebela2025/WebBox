@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco de Dados - WebBox</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Variáveis para modo escuro (padrão) */
+    :root {
+      --primary: #00aaff;
+      --secondary: #ffae00;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --background: #0f172a;
+      --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --text-color: #f8fafc;
+      --header-text: #f8fafc;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --header-bg: rgba(15, 23, 42, 0.95);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-secondary: #cbd5e1;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(255, 174, 0, 0.1);
+    }
+
+    /* Variáveis para modo claro - TOM AMARELINHO */
+    :root.light-mode {
+      --primary: #0077cc;
+      --secondary: #e68a00;
+      --dark: #ffffff;
+      --light: #1e293b;
+      --gray: #4b5e7a;
+      --success: #0a8759;
+    --background: #f4f6ff;
+      --background-gradient: linear-gradient(135deg, #f4f6ff 0%,#f4f6ff 100%);
+      --text-color: #1e293b;
+      --header-text: #f8fafc;
+      --card-bg:#fafbff;
+      --header-bg:rgba(15, 23, 42, 0.95);
+      --border-color: #cbd5ff;
+      --text-secondary: #4b5e7a;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(230, 138, 0, 0.1);
+    }
+
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Estilo do botão de alternância */
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--header-text);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--secondary);
+    }
+
+    /* Header e Navegação */
+    header {
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color); 
+     
+    
+    }
+
+    .logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--header-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--secondary);
+      background: var(--card-hover-bg);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 80%;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dropdown-toggle i {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown:hover .dropdown-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.5rem 0;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1.5rem;
+      color: var(--header-text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--card-hover-bg);
+      color: var(--secondary);
+    }
+
+    .dropdown-menu a::after {
+      display: none;
+    }
+
+    /* Hero Section */
+    .page-hero {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .page-hero-content {
+      flex: 1;
+      text-align: justify;
+    }
+
+    .page-hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: var(--secondary) ;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-hero h2 {
+      font-size: 1.8rem;
+      color: var(--text-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .page-hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+       background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+      color: var(--text-color);
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+    }
+
+    .page-hero-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .page-hero-image img {
+      max-width: 100%;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    /* Content Sections */
+    .content-section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-dark {
+      background: var(--card-bg);
+      border-radius: 20px;
+      margin: 2rem auto;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--secondary);
+      text-align: center;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+
+    .section-content {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .section-content p {
+      margin-bottom: 1.5rem;
+      text-align: justify;
+    }
+
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .info-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-card h3 i {
+      color: var(--secondary);
+    }
+
+    .info-card ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .info-card li {
+      margin-bottom: 0.8rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .info-card li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--secondary);
+    }
+
+    .image-container {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    /* Estilos para alinhar imagem à esquerda e texto à direita */
+    .image-text-container {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .image-text-container img {
+      flex-shrink: 0;
+      width: 250px;
+      transition: all 0.5s ease;
+    }
+
+    .image-text-container img:hover {
+      width: 290px;
+      height: 290px;
+      transition: 0.5s;
+    }
+
+    .image-text-content {
+      flex: 1;
+    }
+
+    /* Responsividade para os containers de imagem e texto */
+    @media (max-width: 768px) {
+      .image-text-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .image-text-container img {
+        max-width: 200px;
+      }
+    }
+
+    /* Conclusão */
+    .conclusion-section {
+      padding: 5rem 2rem;
+      background: var(--card-bg);
+      border-radius: 20px;
+      margin: 2rem auto;
+      max-width: 1200px;
+      text-align: center;
+    }
+
+    .conclusion-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--secondary);
+    }
+
+    .conclusion-section p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Linha do Tempo */
+    .timeline-section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .timeline-content {
+      flex: 1;
+    }
+
+    .timeline-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-color);
+    }
+
+    .timeline-content .highlight {
+      color: var(--secondary);
+    }
+
+    .timeline-content p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .timeline-image {
+      flex: 1;
+      text-align: center;
+    }
+
+    .timeline-image img {
+      max-width: 100%;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .mer {
+      border-radius: 100px;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--header-bg);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-top: 5rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-color);
+    }
+  
+      .footer-logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+  
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--footer-text);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--secondary);
+    }
+
+    .copyright {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Responsividade */
+    @media (max-width: 968px) {
+      .page-hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 120px;
+      }
+
+      .page-hero-content {
+        margin-bottom: 3rem;
+      }
+
+      .page-hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .timeline-section {
+        flex-direction: column;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+    }
+
+    /* Animações */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .delay-1 {
+      animation-delay: 0.2s;
+    }
+    .delay-2 {
+      animation-delay: 0.4s;
+    }
+    .delay-3 {
+      animation-delay: 0.6s;
+    }
+
+    /* Estilos adicionais para melhorar a seção MER/DER */
+    .mer-der-content h3 {
+      color: var(--secondary);
+      margin: 1.5rem 0 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    .mer-der-content h4 {
+      color: var(--primary);
+      margin: 1rem 0 0.5rem 0;
+      font-size: 1.2rem;
+    }
+
+    .mer-der-content ul {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    .mer-der-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    .entity-types,
+    .relationship-types,
+    .attribute-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    /* Cards para todas as informações */
+    .content-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .content-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .content-card h3 {
+      color: var(--secondary);
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    .content-card h4 {
+      color: var(--primary);
+      margin: 1rem 0 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+      </div>
+      <div class="nav-links">
+        <a href="inicio.html">Home</a>
+        <a href="sobrenós.html">Sobre</a>
+        <a href="ETEC.html">Etec de Hortolândia</a>
+        <a href="sobreBD.html" class="active">Banco de Dados</a>
+        <div class="dropdown">
+          <a class="dropdown-toggle">
+            Minigame <i class="fas fa-chevron-down"></i>
+          </a>
+          <div class="dropdown-menu">
+            <a href="minigame-selecao.html">Minigames</a>
+            <a href="ranking.html">Ranking</a>
+          </div>
+        </div>
+        <a href="créditos.html">Créditos</a>
+        <a href="contato.html">Contato</a>
+      </div>
+      <button class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+        <i class="fas fa-moon"></i>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="page-hero">
+    <div class="page-hero-content fade-in">
+      <h2>VENHA APRENDER SOBRE</h2>
+      <h1>BANCO DE DADOS!</h1>
+      <p>
+        Os bancos de dados são fundamentais para nos ajudar a dar sentido às informações que usamos todos os dias. <br> 
+        Nesta página, você vai descobrir sua história, conceitos e importância para o mundo atual.
+      </p>
+      <a href="#oque" class="btn">O que é?</a>
+    </div>
+    <div class="page-hero-image fade-in delay-1">
+      <img src="CSS/IMAGENS/MASCOTEINICIO.png" width="600" height="600" alt="Mascote">
+    </div>
+  </section>
+
+  <!-- O que é -->
+  <section id="oque" class="content-section fade-in delay-2">
+    <h2 class="section-title">O QUE É BANCO DE DADOS</h2>
+    <div class="content-card">
+      <p>
+        Um banco de dados é um sistema estruturado para armazenar, gerenciar e manipular grandes volumes de informações. <br>
+        Esses dados podem ser numéricos, textos, imagens, vídeos, entre outros, em qualquer suporte de informação digital. <br>
+        A principal função de um banco de dados é garantir que essas informações sejam armazenadas de forma organizada e possam ser rapidamente manipuladas de forma segura e confiável. 
+        <br><br>
+        Para facilitar o entendimento, podemos compará-lo a uma biblioteca pública. Veja a analogia:
+      </p>
+      <div class="info-cards">
+        <div class="info-card"><h3> Tabelas</h3><p>são como estantes, organizadas por tema.</p></div>
+        <div class="info-card"><h3> Linhas</h3><p>representam os livros individuais, cada um contendo um conjunto único de informações.</p></div>
+        <div class="info-card"><h3> Colunas</h3><p>são as categorias: autor, título, editora, etc.</p></div>
+      </div>
+      <div class="image-container">
+        <img src="CSS/IMAGENS/oqueebd.png" width="600" height="600" alt="Biblioteca">
+      </div>
+    </div>
+  </section>
+
+  <!-- Estrutura -->
+  <section class="content-section section-dark fade-in">
+    <h2 class="section-title">ESTRUTURA DE UM BANCO DE DADOS</h2>
+    <div class="content-card">
+      <p>Um banco de dados é composto por elementos que facilitam sua organização e o acesso às informações. Entre os principais, destacam-se:</p>
+      <div class="info-cards">
+        <div class="info-card"><h3>Tabelas</h3><p>Armazenam os dados em linhas e colunas.</p></div>
+        <div class="info-card"><h3> Registros</h3><p>Cada linha representa um conjunto completo de informações.</p></div>
+        <div class="info-card"><h3>Campos</h3><p>Cada coluna representa um tipo específico de dado (nome, idade, cidade).</p></div>
+      </div>
+      <h3 style="color: var(--secondary); margin-top: 2rem;">Chaves</h3>
+      <div class="info-cards">
+        <div class="info-card"><h3>Chave primária</h3><p>Identifica de forma única cada registro, evitando duplicações.</p></div>
+        <div class="info-card"> <h3>Chave estrangeira</h3><p>Conecta informações entre diferentes tabelas, estabelecendo relacionamentos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tipos -->
+  <section class="content-section fade-in">
+    <h2 class="section-title">TIPOS DE BANCO DE DADOS</h2>
+    <div class="content-card">
+      <div class="info-cards">
+        <div class="info-card"><h3> Banco de Dados Relacional (RDBMS)</h3><p>usa tabelas com chaves e esquemas fixos. Ex: MySQL, Oracle, PostgreSQL.</p></div>
+        <div class="info-card"><h3> Banco de Dados Não Relacional (NoSQL)</h3><p>estrutura flexível, como documentos, grafos, colunas ou chave-valor. Ex: MongoDB, Redis, Cassandra.</p></div>
+        <div class="info-card"><h3> Banco de Dados em Nuvem</h3><p>operados por serviços como AWS, Google Cloud e Azure.</p></div>
+        <div class="info-card"><h3> Banco de Dados Hierárquico</h3><p>organiza dados em árvore (pai-filho), comum em sistemas antigos.</p></div>
+        <div class="info-card"><h3> Banco de Dados em Rede</h3><p>semelhante ao hierárquico, mas mais flexível, com múltiplas conexões.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Funcionalidades -->
+  <section class="content-section section-dark fade-in">
+    <h2 class="section-title">FUNCIONALIDADES DE UM BANCO DE DADOS</h2>
+    <div class="content-card">
+      <div class="info-cards">
+        <div class="info-card"><h3> Armazenamento estruturado</h3></div>
+        <div class="info-card"><h3>Consultas e manipulação de dados com SQL</h3></div>
+        <div class="info-card"> <h3>Segurança e controle de acesso</h3></div>
+        <div class="info-card"> <h3>Escalabilidade e integração com sistemas</h3></div>
+        <div class="info-card"><h3> Backup e recuperação</h3></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Exemplos -->
+  <section class="content-section fade-in">
+    <h2 class="section-title">EXEMPLOS DE USO</h2>
+    <div class="content-card">
+      <div class="image-text-container">
+        <img src="CSS/IMAGENS/usosbd1.png" alt="Hospitais usando banco de dados" height="250" width="250">
+        <div class="image-text-content">
+          <h3> Hospitais e Clínicas</h3>
+          <p>Gerenciam registros médicos, históricos de pacientes e exames com segurança.</p>
+        </div>
+      </div>
+
+      <div class="image-text-container">
+        <img src="CSS/IMAGENS/usosbd2.png" alt="Redes sociais usando banco de dados" height="250" width="250">
+        <div class="image-text-content">
+          <h3> Redes Sociais</h3>
+          <p>Cadastros, mensagens, postagens e preferências de milhões de usuários, atualizados em tempo real.</p>
+        </div>
+      </div>
+
+      <div class="image-text-container">
+        <img src="CSS/IMAGENS/usosbd3.png" alt="Empresas usando banco de dados" height="250" width="250">
+        <div class="image-text-content">
+          <h3> Empresas e Comércios</h3>
+          <p>Controle de estoque, vendas e dados de clientes para decisões estratégicas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Big Data -->
+  <section class="content-section section-dark fade-in">
+    <h2 class="section-title">BIG DATA</h2>
+    <div class="content-card">
+      <p>
+        Big Data se refere ao grande volume de dados gerados constantemente. Ele é caracterizado por 5 Vs:
+      </p>
+      <div class="info-cards">
+        <div class="info-card"><h3>Volume</h3><p>gigantesca quantidade de dados.</p></div>
+        <div class="info-card"><h3> Velocidade</h3><p>dados gerados em tempo real.</p></div>
+        <div class="info-card"><h3>Variedade</h3><p>informações de diversas fontes e formatos.</p></div>
+        <div class="info-card"><h3> Veracidade</h3><p>qualidade e confiabilidade dos dados.</p></div>
+        <div class="info-card"><h3> Valor</h3><p>extração de insights para conhecimento.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mineração -->
+  <section class="content-section fade-in">
+    <h2 class="section-title">MINERAÇÃO DE DADOS</h2>
+    <div class="content-card">
+      <p>
+        Processo de explorar grandes volumes de dados para descobrir padrões, tendências, correlações e informações úteis. 
+        Ela utiliza técnicas de estatística, inteligência artificial e aprendizado de máquina.
+      </p>
+      <p><b>Exemplos:</b></p>
+
+      <div class="image-text-container">
+        <img src="CSS/IMAGENS/md1.png" alt="Mineração de dados em hospitais" height="250" width="250">
+        <div class="image-text-content">
+          <h3>Hospitais</h3>
+          <p>prever doenças a partir de sintomas.</p>
+        </div>
+      </div>
+
+      <div class="image-text-container">
+        <img src="CSS/IMAGENS/md2.png" alt="Mineração de dados em empresas" height="250" width="250">
+        <div class="image-text-content">
+          <h3>Empresas</h3>
+          <p>entender padrões de consumo para aumentar vendas.</p>
+        </div>
+      </div>
+
+      <div class="image-text-container">
+        <img src="CSS/IMAGENS/md3.png" alt="Mineração de dados em bancos" height="250" width="250">
+        <div class="image-text-content">
+          <h3> Bancos</h3>
+          <p>identificar fraudes em transações financeiras.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MER e DER -->
+  <section class="content-section section-dark fade-in">
+    <h2 class="section-title">MODELO ENTIDADE-RELACIONAMENTO (MER)</h2>
+    <div class="content-card">
+      <center><img class="mer" src="CSS/IMAGENS/MER.png" alt="Diagrama do Modelo Entidade-Relacionamento"></center>
+
+      <h3>Entidades</h3>
+      <p>Representam objetos ou conceitos do mundo real que são relevantes para o sistema, como um "cliente", um "produto" ou um "pedido".</p>
+      
+      <h4>Classificação por Natureza:</h4>
+      <div class="info-cards">
+        <div class="info-card">
+          <h3> Físicas</h3>
+          <p>Objetos concretos e tangíveis (ex: pessoas, empresas, produtos)</p>
+        </div>
+        <div class="info-card">
+          <h3> Lógicas</h3>
+          <p>Conceitos que existem a partir de interações no domínio de negócios (ex: Venda, Pedido)</p>
+        </div>
+      </div>
+      
+      <h4>Tipos Estruturais:</h4>
+      <div class="info-cards">
+        <div class="info-card">
+          <h3> Fortes</h3>
+          <p>Independentes (ex: Produto)</p>
+        </div>
+        <div class="info-card">
+          <h3> Fracas</h3>
+          <p>Dependem de outra entidade (ex: Venda)</p>
+        </div>
+        <div class="info-card">
+          <h3> Associativas</h3>
+          <p>Representam um relacionamento (ex: ItemVenda)</p>
+        </div>
+      </div>
+      
+      <h3>Relacionamentos</h3>
+      <p>Indicam as associações ou interações entre as entidades. Por exemplo, um cliente pode "realizar" um pedido.</p>
+      
+      <h4>Tipos de Cardinalidade:</h4>
+      <div class="info-cards">
+        <div class="info-card">
+          <h3> 1..1 (Um para Um)</h3>
+          <p>Cada entidade referencia apenas uma unidade da outra</p>
+        </div>
+        <div class="info-card">
+          <h3>1..n (Um para Muitos)</h3>
+          <p>Uma entidade referencia várias unidades da outra, mas cada unidade do "muitos" está ligada a apenas uma do "um"</p>
+        </div>
+        <div class="info-card">
+          <h3> n..n (Muitos para Muitos)</h3>
+          <p>Entidades de ambos os lados podem referenciar múltiplas unidades uma da outra</p>
+        </div>
+      </div>
+      
+      <h3>Atributos</h3>
+      <p>São as características que descrevem cada entidade dentro do domínio. Por exemplo, um cliente possui nome, endereço e telefone.</p>
+      
+      <h4>Classificação por Função:</h4>
+      <div class="info-cards">
+        <div class="info-card">
+          <h3> Descritivos</h3>
+          <p>Característica intrínsecas (ex: nome, cor)</p>
+        </div>
+        <div class="info-card">
+          <h3>Nominativos</h3>
+          <p>Identificam e definem um objeto (ex: código, número)</p>
+        </div>
+        <div class="info-card">
+          <h3> Referenciais</h3>
+          <p>Ligam uma entidade a outra em um relacionamento (ex: CPF do cliente na entidade Venda)</p>
+        </div>
+      </div>
+      
+      <h4>Classificação por Estrutura:</h4>
+      <div class="info-cards">
+        <div class="info-card">
+          <h3>Simples</h3>
+          <p>Um único atributo (ex: nome, peso)</p>
+        </div>
+        <div class="info-card">
+          <h3> Compostos</h3>
+          <p>Vários atributos formam uma informação (ex: endereço = rua + número + bairro)</p>
+        </div>
+      </div>
+
+      <div class="info-card" style="margin-top: 1.5rem;">
+        <h3> Chave Primária</h3>
+        <p>Atributo com valor único que identifica cada entidade de forma irrepetível (ex: CPF no cadastro de Cliente).</p>
+      </div>
+      
+      <h2 class="section-title" style="margin-top: 3rem;">DIAGRAMA ENTIDADE-RELACIONAMENTO (DER)</h2>
+      <p>Enquanto o MER é um modelo conceitual, o Diagrama Entidade Relacionamento (DER) é a sua representação gráfica:</p>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <h3> Entidades</h3>
+          <p>Representadas por retângulos</p>
+        </div>
+        <div class="info-card">
+          <h3> Relacionamentos</h3>
+          <p>Representados por losangos</p>
+        </div>
+        <div class="info-card">
+          <h3> Atributos</h3>
+          <p>Representados por elipses (ou dentro da entidade, na notação UML)</p>
+        </div>
+        <div class="info-card">
+          <h3> Cardinalidade</h3>
+          <p>1:1, 1:N, N:N ou notações como (1,1), (0,n)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section section-dark fade-in">
+    <h2 class="section-title">FERRAMENTAS CASE</h2>
+    <div class="content-card">
+      <p>Softwares que auxiliam o processo de engenharia de software, desde a análise de requisitos até a programação e testes, visando melhorar a qualidade e produtividade no desenvolvimento de sistemas:</p>
+      <div class="info-cards">
+        <div class="info-card">
+          <h3>StarUML</h3>
+        </div>
+        <div class="info-card">
+          <h3>ERwin Data Modeler</h3>
+        </div>
+        <div class="info-card">
+          <h3>Astah</h3>
+        </div>
+        <div class="info-card">
+          <h3>SQL Server Management</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusão -->
+  <section class="conclusion-section fade-in">
+    <h2>CONCLUSÃO</h2>
+    <p>
+      A modelagem de dados por meio do MER e do DER é essencial para o desenvolvimento de sistemas bem estruturados. Entender os tipos de banco de dados, suas funcionalidades, ferramentas e aplicações permite construir soluções eficientes, seguras e escaláveis.
+    </p>
+  </section>
+
+  <!-- Linha do Tempo -->
+  <section class="timeline-section fade-in">
+    <div class="timeline-content">
+      <h1>LINHA DO TEMPO<br><span class="highlight">JORNADA DOS DADOS</span></h1>
+      <p>
+        Prepare-se para viajar no tempo com o Dash! Vamos descobrir como os bancos de dados surgiram, evoluíram e mudaram o mundo digital.
+        Cada passo é uma parte importante da história que usamos até hoje.
+      </p>
+      <a href="linhadotempo.html" class="btn">Vamos lá!</a>
+    </div>
+    <div class="timeline-image">
+      <img src="CSS/IMAGENS/MASCOTE2.png" alt="Mascote Leopardo" height="550" width="600">
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">
+        <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+      </div>
+      <div class="footer-links">
+        <a href="inicio.html">Home</a>
+        <a href="sobrenós.html">Sobre</a>
+        <a href="ETEC.html">Etec de Hortolândia</a>
+        <a href="sobreBD.html">Banco de Dados</a>
+        <a href="contato.html">Contato</a>
+        <a href="minigame.html">Minigame</a>
+        <a href="créditos.html">Créditos</a>
+      </div>
+      <p class="copyright">
+        ETEC DE HORTOLÂNDIA 2025 - © Todos os direitos reservados.<br>
+        Trabalho acadêmico sem fins lucrativos
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Animação de entrada suave para elementos
+    document.addEventListener('DOMContentLoaded', function() {
+      const fadeElements = document.querySelectorAll('.fade-in');
+      
+      const fadeInObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+
+      fadeElements.forEach(el => {
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        fadeInObserver.observe(el);
+      });
+
+      // Funcionalidade de alternância de tema
+      const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+      const themeIcon = themeToggleBtn.querySelector('i');
+      
+      // Carregar tema salvo do localStorage
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      }
+
+      // Alternar tema ao clicar no botão
+      themeToggleBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('light-mode');
+        if (document.documentElement.classList.contains('light-mode')) {
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+          localStorage.setItem('theme', 'light');
+        } else {
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-moon');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

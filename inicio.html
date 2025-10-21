@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebBox - Banco de Dados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+ :root {
+      --primary: #00aaff;
+      --secondary: #ffae00;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --background: #0f172a;
+      --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --text-color: #f8fafc;
+      --header-text: #f8fafc;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --header-bg: rgba(15, 23, 42, 0.95);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-secondary: #cbd5e1;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(255, 174, 0, 0.1);
+    }
+
+    /* Variáveis para modo claro - TOM AMARELINHO */
+    :root.light-mode {
+      --primary: #0077cc;
+      --secondary: #e68a00;
+      --dark: #ffffff;
+      --light: #1e293b;
+      --gray: #4b5e7a;
+      --success: #0a8759;
+    --background: #f4f6ff;
+      --background-gradient: linear-gradient(135deg, #f4f6ff 0%,#f4f6ff 100%);
+      --text-color: #1e293b;
+      --header-text: #f8fafc;
+      --card-bg:#fafbff;
+      --header-bg:rgba(15, 23, 42, 0.95);
+      --border-color: #cbd5ff;
+      --text-secondary: #4b5e7a;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(230, 138, 0, 0.1);
+    }
+
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Estilo do botão de alternância */
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--header-text);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--secondary);
+    }
+
+    /* Header e Navegação */
+    header {
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color); 
+     
+    
+    }
+
+    .logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--header-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--secondary);
+      background: var(--card-hover-bg);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 80%;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dropdown-toggle i {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown:hover .dropdown-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.5rem 0;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1.5rem;
+      color: var(--header-text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--card-hover-bg);
+      color: var(--secondary);
+    }
+
+    .dropdown-menu a::after {
+      display: none;
+    }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .hero-content {
+            flex: 1;
+            padding-right: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: var(--secondary) ;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(90deg, var(--secondary) 0%, #ffc233 100%);
+            box-shadow: 0 4px 15px rgba(255, 174, 0, 0.3);
+            margin-left: 1rem;
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(255, 174, 0, 0.4);
+        }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* REMOVIDO: Todas as bordas, sombras e efeitos de borda das imagens */
+        .hero-image img {
+            max-width: 100%;
+            /* BORDAS REMOVIDAS */
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+    
+        }
+        
+        /* Mascote Section */
+        .mascote {
+            padding: 5rem 2rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            margin: 2rem auto;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+        
+        .mascote-content {
+            flex: 1;
+        }
+        
+        .mascote h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .mascote p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .mascote-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        /* REMOVIDO: Bordas da imagem do mascote */
+        .mascote-image img {
+            max-width: 100%;
+            /* BORDAS REMOVIDAS */
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+         /* Cards Section */
+        .features {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-color);
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+            gap: 5px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-link {
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .card-link:hover {
+            color: var(--secondary);
+        }
+        
+        
+        /* Footer */
+        footer {
+            background: var(--header-bg);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+           .footer-logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 968px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 120px;
+            }
+            
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 3rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .mascote {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--text-color);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                display: block;
+                margin-bottom: 1rem;
+                width: 100%;
+                max-width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .btn-secondary {
+                margin-left: 0;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+<header>
+    <nav class="navbar">
+        <div class="logo">
+        <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+        
+        </div>
+        <div class="nav-links">
+            <a href="inicio.html" class="active">Home</a>
+            <a href="sobrenós.html">Sobre</a>
+            <a href="ETEC.html">Etec de Hortolândia</a>
+            <a href="sobreBD.html">Banco de Dados</a>
+            
+            <div class="dropdown">
+                <a class="dropdown-toggle">
+                    Minigame <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="minigame-selecao.html">Minigames</a>
+                    <a href="ranking.html">Ranking</a>
+                </div>
+            </div>
+            <a href="créditos.html">Créditos</a>
+            <a href="contato.html">Contato</a>
+        </div>
+        <button class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+</header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1>Explore o Mundo dos <span>Bancos de Dados</span></h1>
+            <p>Descubra como os dados são organizados, armazenados e transformados em conhecimento. Uma jornada fascinante pelo universo da informação digital.</p>
+            <div>
+                <a href="sobreBD.html" class="btn">Começar a Explorar</a>
+                <a href="minigame-selecao.html" class="btn btn-secondary">Jogar Minigame</a>
+            </div>
+        </div>
+        <div class="hero-image fade-in delay-1">
+            <img src="CSS/IMAGENS/IMAGEMINICIO.png" alt="Banco de Dados">
+        </div>
+    </section>
+
+    <!-- Mascote Section -->
+    <section class="mascote fade-in delay-2">
+        <div class="mascote-content">
+            <h2>Conheça o Dash</h2>
+            <p>Nosso mascote Dash é um leopardo curioso e ágil que vai te guiar por essa aventura pelo mundo dos dados. Assim como um leopardo é rápido e preciso, o Dash representa a agilidade e eficiência dos bancos de dados modernos.</p>
+            <p>Ele estará presente em todas as seções do site, trazendo dicas, curiosidades e tornando o aprendizado mais divertido e envolvente.</p>
+        </div>
+        <div class="mascote-image">
+            <img src="CSS/IMAGENS/MASCOTEINICIO.png" alt="Mascote Dash">
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="fade-in">O Que Você Vai Descobrir</h2>
+        <div class="cards">
+            <div class="card fade-in delay-1">
+                <div class="card-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3>História e Evolução</h3>
+                <p>Viaje no tempo e descubra como os bancos de dados evoluíram desde os primórdios da computação até os sistemas modernos em nuvem.</p>
+                <a href="sobreBD.html" class="card-link">Saiba mais →</a>
+            </div>
+            
+            <div class="card fade-in delay-2">
+                <div class="card-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>Como Funcionam</h3>
+                <p>Entenda os conceitos fundamentais, estruturas e operações que tornam os bancos de dados tão eficientes e confiáveis.</p>
+                <a href="sobreBD.html" class="card-link">Saiba mais →</a>
+            </div>
+            
+            <div class="card fade-in delay-3">
+                <div class="card-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Aplicações no Dia a Dia</h3>
+                <p>Descubra onde os bancos de dados estão presentes em seu cotidiano, desde redes sociais até sistemas bancários.</p>
+                <a href="sobreBD.html" class="card-link">Saiba mais →</a>
+            </div>
+            
+            <div class="card fade-in">
+                <div class="card-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h3>Minigames Interativo</h3>
+                <p>Teste seus conhecimentos de forma divertida com nossos jogos interativos e desafie seus amigos!</p>
+                <a href="minigame-selecao.html" class="card-link">Jogar agora →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+             <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+            </div>
+            <div class="footer-links">
+                <a href="inicio.html">Home</a>
+                <a href="sobrenós.html">Sobre</a>
+                <a href="ETEC.html">Etec de Hortolândia</a>
+                <a href="sobreBD.html">Banco de Dados</a>
+                <a href="contato.html">Contato</a>
+                <a href="minigame-selecao.html">Minigame</a>
+                <a href="créditos.html">Créditos</a>
+            </div>
+            <p class="copyright">
+                ETEC DE HORTOLÂNDIA 2025 - © Todos os direitos reservados.<br>
+                Trabalho acadêmico sem fins lucrativos
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Animação de entrada suave para elementos
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                fadeInObserver.observe(el);
+            });
+            
+            // Funcionalidade de alternância de tema
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            const themeIcon = themeToggleBtn.querySelector('i');
+            
+            // Carregar tema salvo do localStorage
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.classList.remove('light-mode');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+
+            // Alternar tema ao clicar no botão
+            themeToggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('light-mode');
+                if (document.documentElement.classList.contains('light-mode')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

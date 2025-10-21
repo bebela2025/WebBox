@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - WebBox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Variáveis para modo escuro (padrão) */
+        :root {
+            --primary: #00aaff;
+            --secondary: #ffae00;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #10b981;
+            --background: #0f172a;
+            --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --text-color: #f8fafc;
+            --header-text: #f8fafc;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --header-bg: rgba(15, 23, 42, 0.95);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-secondary: #cbd5e1;
+            --footer-text: #94a3b8;
+            --card-hover-bg: rgba(255, 174, 0, 0.1);
+        }
+
+        /* Variáveis para modo claro - TOM AMARELINHO */
+        :root.light-mode {
+            --primary: #0077cc;
+            --secondary: #e68a00;
+            --dark: #ffffff;
+            --light: #1e293b;
+            --gray: #4b5e7a;
+            --success: #0a8759;
+            --background: #f4f6ff;
+            --background-gradient: linear-gradient(135deg, #f4f6ff 0%,#f4f6ff 100%);
+            --text-color: #1e293b;
+            --header-text: #f8fafc;
+            --card-bg:#fafbff;
+            --header-bg:rgba(15, 23, 42, 0.95);
+            --border-color: #cbd5ff;
+            --text-secondary: #4b5e7a;
+            --footer-text: #94a3b8;
+            --card-hover-bg: rgba(230, 138, 0, 0.1);
+        }
+        
+        body {
+            background: var(--background-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Estilo do botão de alternância */
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            color: var(--secondary);
+        }
+
+        /* Header e Navegação */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dropdown-toggle i {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.5rem 0;
+            min-width: 180px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: var(--header-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 0;
+            margin: 0;
+        }
+
+        .dropdown-menu a:hover {
+            background: var(--card-hover-bg);
+            color: var(--secondary);
+            transform: none;
+        }
+
+        .dropdown-menu a::after {
+            display: none;
+        }
+
+        header {
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        
+      .logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--header-text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--secondary);
+            background: var(--card-hover-bg);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 80%;
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            flex: 1;
+            padding: 120px 2rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .contact-title {
+            margin-top: 30px;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--secondary) ;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        
+        .contact-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            text-align: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Estatísticas */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .contact-form {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--background);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.3);
+        }
+        
+        /* SISTEMA DE ESTRELAS CORRETO - ESQUERDA PARA DIREITA */
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            justify-content: center;
+        }
+        
+        .star-rating input {
+            display: none;
+        }
+        
+        .star-rating label {
+            font-size: 2rem;
+            color: #475569;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc233;
+        }
+        
+        .star-rating input:checked ~ label {
+            color: #475569;
+        }
+        
+        .star-rating label:hover,
+        .star-rating input:checked + label ~ label {
+            color: #ffc233;
+        }
+        
+        .star-rating input:checked + label {
+            color: #ffc233;
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--header-bg);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+               .footer-logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Modal de Confirmação */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+        }
+
+        /* Responsividade */
+        @media (max-width: 968px) {
+            .contact-section {
+                padding-top: 100px;
+            }
+            
+            .contact-title {
+                font-size: 2.5rem;
+            }
+            
+            .contact-form {
+                padding: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .contact-title {
+                font-size: 2rem;
+            }
+            
+            .contact-form {
+                padding: 1.5rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .star-rating label {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="logo">
+          <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+        </div>
+        <div class="nav-links">
+            <a href="inicio.html" >Home</a>
+            <a href="sobrenós.html">Sobre</a>
+            <a href="ETEC.html">Etec de Hortolândia</a>
+            <a href="sobreBD.html">Banco de Dados</a>
+            
+            <div class="dropdown">
+                <a class="dropdown-toggle">
+                    Minigame <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="minigame-selecao.html">Minigames</a>
+                    <a href="ranking.html">Ranking</a>
+                </div>
+            </div>
+            <a href="créditos.html">Créditos</a>
+            <a href="contato.html" class="active">Contato</a>
+        </div>
+        <button class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+</header>
+
+    <section class="contact-section fade-in">
+        <h1 class="contact-title">Entre em Contato</h1>
+        <p class="contact-subtitle">
+            Queremos ouvir você! Envie sua mensagem, dúvida ou sugestão, e compartilhe sua avaliação sobre o nosso site. 
+            Sua opinião é muito importante para continuarmos melhorando.
+        </p>
+        
+        <!-- Estatísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="total-contatos">0</div>
+                <div class="stat-label">Total de Contatos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="media-avaliacao">0.0</div>
+                <div class="stat-label">Média de Avaliação</div>
+            </div>
+        </div>
+        
+        <div class="contact-form">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mensagem">Mensagem</label>
+                    <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Avaliação:</label>
+                    <div class="star-rating">
+                        <input type="radio" id="estrela1" name="estrela" value="1">
+                        <label for="estrela1">★</label>
+                        <input type="radio" id="estrela2" name="estrela" value="2">
+                        <label for="estrela2">★</label>
+                        <input type="radio" id="estrela3" name="estrela" value="3">
+                        <label for="estrela3">★</label>
+                        <input type="radio" id="estrela4" name="estrela" value="4">
+                        <label for="estrela4">★</label>
+                        <input type="radio" id="estrela5" name="estrela" value="5">
+                        <label for="estrela5">★</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">Enviar Mensagem</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+            </div>
+            <div class="footer-links">
+                <a href="inicio.html">Home</a>
+                <a href="sobrenós.html">Sobre</a>
+                <a href="ETEC.html">Etec de Hortolândia</a>
+                <a href="sobreBD.html">Banco de Dados</a>
+                <a href="contato.html">Contato</a>
+                <a href="minigame.html">Minigame</a>
+                <a href="ranking.html">Ranking</a>
+                <a href="créditos.html">Créditos</a>
+            </div>
+            <p class="copyright">
+                ETEC DE HORTOLÂNDIA 2025 - © Todos os direitos reservados.<br>
+                Trabalho acadêmico sem fins lucrativos
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <h2 class="modal-title">Mensagem Enviada!</h2>
+            <div class="modal-message" id="modalMessage"></div>
+            <button class="modal-btn" onclick="fecharModal()">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        // Variável global para controlar a avaliação atual
+        let avaliacaoAtual = 0;
+
+        // Função para inicializar quando a página carrega
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página carregada - inicializando contato...');
+            
+            // Animação de entrada
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const fadeInObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(el => {
+                el.style.opacity = 0;
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                fadeInObserver.observe(el);
+            });
+
+            // Carregar estatísticas iniciais
+            atualizarEstatisticas();
+
+            // Configurar o formulário
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                console.log('Formulário encontrado, adicionando event listener...');
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('Formulário submetido!');
+                    processarFormulario();
+                });
+            } else {
+                console.error('Formulário não encontrado!');
+            }
+
+            // Configurar sistema de estrelas
+            configurarSistemaEstrelas();
+
+            // Funcionalidade de alternância de tema
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            const themeIcon = themeToggleBtn.querySelector('i');
+            
+            // Carregar tema salvo do localStorage
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.classList.remove('light-mode');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+
+            // Alternar tema ao clicar no botão
+            themeToggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('light-mode');
+                if (document.documentElement.classList.contains('light-mode')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+
+        // Configurar o sistema de estrelas interativo
+        function configurarSistemaEstrelas() {
+            const estrelas = document.querySelectorAll('.star-rating input');
+            
+            estrelas.forEach(estrela => {
+                estrela.addEventListener('change', function() {
+                    avaliacaoAtual = parseInt(this.value);
+                    console.log('Avaliação selecionada:', avaliacaoAtual);
+                    
+                    // Atualizar visual das estrelas
+                    atualizarVisualEstrelas(avaliacaoAtual);
+                });
+            });
+            
+            // Configurar hover
+            const labels = document.querySelectorAll('.star-rating label');
+            labels.forEach((label, index) => {
+                label.addEventListener('mouseenter', function() {
+                    const valor = index + 1; // Agora da esquerda para direita
+                    atualizarVisualEstrelas(valor);
+                });
+                
+                label.addEventListener('mouseleave', function() {
+                    atualizarVisualEstrelas(avaliacaoAtual);
+                });
+            });
+        }
+
+        // Atualizar visual das estrelas
+        function atualizarVisualEstrelas(valor) {
+            const estrelas = document.querySelectorAll('.star-rating label');
+            
+            estrelas.forEach((estrela, index) => {
+                const estrelaValor = index + 1; // 1, 2, 3, 4, 5 da esquerda para direita
+                if (estrelaValor <= valor) {
+                    estrela.style.color = '#ffc233'; // Amarelo para estrelas selecionadas
+                } else {
+                    estrela.style.color = '#475569'; // Cinza para estrelas não selecionadas
+                }
+            });
+        }
+
+        // Função para processar o formulário
+        function processarFormulario() {
+            console.log('Processando formulário...');
+            
+            // Pegar dados do formulário
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const mensagem = document.getElementById('mensagem').value;
+            
+            console.log('Dados capturados:', { nome, email, mensagem, avaliacaoAtual });
+            
+            // Validar dados
+            if (!nome || !email || !mensagem) {
+                console.log('Campos obrigatórios não preenchidos');
+                mostrarModal('❌', 'Campos Obrigatórios', 'Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            // Validar email
+            if (!validarEmail(email)) {
+                console.log('Email inválido');
+                mostrarModal('❌', 'Email Inválido', 'Por favor, insira um email válido.');
+                return;
+            }
+            
+            // Validar se foi selecionada uma avaliação
+            if (avaliacaoAtual === 0) {
+                console.log('Nenhuma avaliação selecionada');
+                mostrarModal('❌', 'Avaliação Obrigatória', 'Por favor, selecione uma avaliação com as estrelas.');
+                return;
+            }
+            
+            // Criar objeto com os dados
+            const contato = {
+                nome: nome,
+                email: email,
+                mensagem: mensagem,
+                avaliacao: avaliacaoAtual,
+                data: new Date().toLocaleString('pt-BR'),
+                timestamp: new Date().getTime()
+            };
+            
+            console.log('Contato criado:', contato);
+            
+            // Salvar no localStorage
+            salvarContato(contato);
+            
+            // Atualizar estatísticas
+            atualizarEstatisticas();
+            
+            // Mostrar modal de sucesso
+            const estrelasTexto = avaliacaoAtual === 1 ? 'estrela' : 'estrelas';
+            mostrarModal(
+                '✅', 
+                'Mensagem Enviada com Sucesso!', 
+                `Obrigado <strong>${nome}</strong>! Sua mensagem foi salva.<br>
+                 Avaliação: ${'★'.repeat(avaliacaoAtual)}${'☆'.repeat(5-avaliacaoAtual)} (${avaliacaoAtual} ${estrelasTexto})`
+            );
+            
+            // Limpar formulário
+            document.getElementById('contactForm').reset();
+            
+            // Resetar avaliação
+            avaliacaoAtual = 0;
+            atualizarVisualEstrelas(0);
+            
+            console.log('Formulário processado com sucesso!');
+        }
+
+        // Função para validar email
+        function validarEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        // Função para salvar contato no banco local
+        function salvarContato(contato) {
+            let contatos = JSON.parse(localStorage.getItem('webbox_contatos')) || [];
+            contatos.push(contato);
+            localStorage.setItem('webbox_contatos', JSON.stringify(contatos));
+            console.log('📝 Contato salvo. Total:', contatos.length);
+        }
+
+        // Função para atualizar estatísticas
+        function atualizarEstatisticas() {
+            const contatos = JSON.parse(localStorage.getItem('webbox_contatos')) || [];
+            const totalContatos = contatos.length;
+            
+            console.log('Atualizando estatísticas. Total de contatos:', totalContatos);
+            
+            // Calcular média de avaliação (APENAS contatos com avaliação > 0)
+            const avaliacoes = contatos.map(c => parseInt(c.avaliacao)).filter(a => a > 0);
+            let mediaAvaliacao = '0.0';
+            
+            if (avaliacoes.length > 0) {
+                const soma = avaliacoes.reduce((a, b) => a + b, 0);
+                mediaAvaliacao = (soma / avaliacoes.length).toFixed(1);
+            }
+            
+            console.log('Média de avaliação:', mediaAvaliacao);
+            
+            // Atualizar UI
+            document.getElementById('total-contatos').textContent = totalContatos;
+            document.getElementById('media-avaliacao').textContent = mediaAvaliacao;
+        }
+
+        // Funções do Modal
+        function mostrarModal(icone, titulo, mensagem) {
+            const modal = document.getElementById('confirmationModal');
+            const modalIcon = modal.querySelector('.modal-icon');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalMessage = document.getElementById('modalMessage');
+            
+            modalIcon.textContent = icone;
+            modalTitle.textContent = titulo;
+            modalMessage.innerHTML = mensagem;
+            modal.style.display = 'block';
+            
+            console.log('Modal mostrado:', titulo);
+        }
+
+        function fecharModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            console.log('Modal fechado');
+        }
+
+        // Fechar modal clicando fora
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('confirmationModal');
+            if (e.target === modal) {
+                fecharModal();
+            }
+        });
+
+        // Debug: Verificar se há contatos salvos
+        console.log('Contatos atuais no localStorage:', JSON.parse(localStorage.getItem('webbox_contatos') || '[]'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre Nós - WebBox</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+     /* Variáveis para modo escuro (padrão) */
+    :root {
+      --primary: #00aaff;
+      --secondary: #ffae00;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --background: #0f172a;
+      --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --text-color: #f8fafc;
+      --header-text: #f8fafc;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --header-bg: rgba(15, 23, 42, 0.95);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-secondary: #cbd5e1;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(255, 174, 0, 0.1);
+    }
+
+    /* Variáveis para modo claro - TOM AMARELINHO */
+    :root.light-mode {
+      --primary: #0077cc;
+      --secondary: #e68a00;
+      --dark: #ffffff;
+      --light: #1e293b;
+      --gray: #4b5e7a;
+      --success: #0a8759;
+    --background: #f4f6ff;
+      --background-gradient: linear-gradient(135deg, #f4f6ff 0%,#f4f6ff 100%);
+      --text-color: #1e293b;
+      --header-text: #f8fafc;
+      --card-bg:#fafbff;
+      --header-bg:rgba(15, 23, 42, 0.95);
+      --border-color: #cbd5ff;
+      --text-secondary: #4b5e7a;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(230, 138, 0, 0.1);
+    }
+
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Estilo do botão de alternância */
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--header-text);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--secondary);
+    }
+
+    /* Header e Navegação */
+    header {
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color); 
+     
+    
+    }
+
+    .logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--header-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--secondary);
+      background: var(--card-hover-bg);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 80%;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dropdown-toggle i {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown:hover .dropdown-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.5rem 0;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1.5rem;
+      color: var(--header-text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--card-hover-bg);
+      color: var(--secondary);
+    }
+
+    .dropdown-menu a::after {
+      display: none;
+    }
+
+    /* Hero Section */
+    .page-hero {
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    .page-hero-content {
+      flex: 1;
+      text-align: justify;
+    }
+    
+    .page-hero h1 {
+      font-size: 1.8rem;
+      color: var(--secondary);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .page-hero h2 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: var(--text-color) ;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+    
+    .page-hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+      border: none;
+      cursor: pointer;
+     
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+    }
+    
+    /* Content Sections */
+    .content-section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--secondary);
+      text-align: center;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+    
+    .section-content {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      text-align: center;
+    }
+    
+    .section-content p {
+      margin-bottom: 1.5rem;
+    }
+    
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 3rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+    
+    .about-image {
+      text-align: center;
+    }
+    
+    /* REMOVIDO: Bordas da imagem sobre nós */
+    .about-image img {
+      max-width: 100%;
+      /* BORDAS REMOVIDAS */
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    
+    .about-text {
+      text-align: left;
+    }
+    
+    .about-text h3 {
+      font-size: 2rem;
+      color: var(--secondary);
+      margin-bottom: 1rem;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--header-bg);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-top: 5rem;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-color);
+    }
+    
+       .footer-logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .footer-links a {
+      color: var(--footer-text);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--secondary);
+    }
+    
+    .copyright {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 968px) {
+      .page-hero {
+        padding-top: 120px;
+      }
+      
+      .page-hero h1 {
+        font-size: 2.8rem;
+      }
+      
+      .about-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .about-text {
+        text-align: center;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .page-hero h1 {
+        font-size: 2.2rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+    
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+<header>
+    <nav class="navbar">
+        <div class="logo">
+      <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+        </div>
+        <div class="nav-links">
+            <a href="inicio.html">Home</a>
+            <a href="sobrenós.html"class="active">Sobre</a>
+            <a href="ETEC.html">Etec de Hortolândia</a>
+            <a href="sobreBD.html">Banco de Dados</a>
+           
+            <div class="dropdown">
+                <a class="dropdown-toggle" >
+                    Minigame <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="minigame-selecao.html">Minigames</a>
+                    <a href="ranking.html">Ranking</a>
+                </div>
+            </div>
+            <a href="créditos.html">Créditos</a>
+            <a href="contato.html" >Contato</a>
+        </div>
+        <button class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+</header>
+
+  <!-- Hero Section -->
+  <section class="page-hero">
+    <div class="page-hero-content fade-in">
+      <h2>ETEC DE PORTAS ABERTAS:</h2>
+      <h1>SOBRE O PROJETO</h1>
+      <p>
+        O Etec de Portas Abertas é uma iniciativa dos alunos do curso técnico, criada para apresentar à comunidade escolar o potencial da área de  Tecnologia da Informação. 
+        O projeto busca, acima de tudo, despertar  o interesse dos estudantes visitantes pelo curso, mostrando na prática  as possibilidades de aprendizado e aplicação.
+      </p>
+      <h1>OBJETIVO DO SITE</h2>
+      <p>
+        O site desenvolvido para o Etec de Portas Abertas tem como finalidade apresentar e explicar o conceito de Banco de Dados de forma clara e acessível, permitindo que os visitantes compreendam sua importância no cenário tecnológico atual. 
+      </p>
+     
+     <center> <a href="créditos.html" class="btn">CONHEÇA NOSSA EQUIPE!</a></center>
+    </div>
+  </section>
+
+  <!-- Quem Somos -->
+  <section class="content-section fade-in delay-1">
+    <div class="about-grid">
+      <div class="about-image">
+        <img src="CSS/IMAGENS/IMAGEMQUEMSOMOS.png" alt="Equipe">
+      </div>
+      <div class="about-text">
+        <h3>QUEM SOMOS NÓS</h3>
+        <p>
+          Somos uma equipe de estudantes do curso técnico da Etec que uniu esforços e competências para transformar conhecimento em prática. <br>
+          Nosso trabalho reflete dedicação, responsabilidade e o desejo de entregar um projeto que represente a qualidade do ensino e o compromisso da instituição com a inovação.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">
+   <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+      </div>
+      <div class="footer-links">
+        <a href="inicio.html">Home</a>
+        <a href="sobrenós.html">Sobre</a>
+        <a href="ETEC.html">Etec de Hortolândia</a>
+        <a href="sobreBD.html">Banco de Dados</a>
+        <a href="contato.html">Contato</a>
+        <a href="minigame.html">Minigame</a>
+        <a href="créditos.html">Créditos</a>
+      </div>
+      <p class="copyright">
+        ETEC DE HORTOLÂNDIA 2025 - © Todos os direitos reservados.<br>
+        Trabalho acadêmico sem fins lucrativos
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Animação de entrada suave para elementos
+    document.addEventListener('DOMContentLoaded', function() {
+      const fadeElements = document.querySelectorAll('.fade-in');
+      
+      const fadeInObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      fadeElements.forEach(el => {
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        fadeInObserver.observe(el);
+      });
+      
+      // Funcionalidade de alternância de tema
+      const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+      const themeIcon = themeToggleBtn.querySelector('i');
+      
+      // Carregar tema salvo do localStorage
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      }
+
+      // Alternar tema ao clicar no botão
+      themeToggleBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('light-mode');
+        if (document.documentElement.classList.contains('light-mode')) {
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+          localStorage.setItem('theme', 'light');
+        } else {
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-moon');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking - WebBox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Variáveis para modo escuro (padrão) */
+    :root {
+      --primary: #00aaff;
+      --secondary: #ffae00;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --background: #0f172a;
+      --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --text-color: #f8fafc;
+      --header-text: #f8fafc;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --header-bg: rgba(15, 23, 42, 0.95);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-secondary: #cbd5e1;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(255, 174, 0, 0.1);
+    }
+
+    /* Variáveis para modo claro - TOM AMARELINHO */
+    :root.light-mode {
+      --primary: #0077cc;
+      --secondary: #e68a00;
+      --dark: #ffffff;
+      --light: #1e293b;
+      --gray: #4b5e7a;
+      --success: #0a8759;
+    --background: #f4f6ff;
+      --background-gradient: linear-gradient(135deg, #f4f6ff 0%,#f4f6ff 100%);
+      --text-color: #1e293b;
+      --header-text: #f8fafc;
+      --card-bg:#fafbff;
+      --header-bg:rgba(15, 23, 42, 0.95);
+      --border-color: #cbd5ff;
+      --text-secondary: #4b5e7a;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(230, 138, 0, 0.1);
+    }
+        
+        body {
+            background: var(--background-gradient);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+ /* Estilo do botão de alternância */
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--header-text);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--secondary);
+    }
+        
+        /* Header e Navegação */
+header {
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color); 
+     
+    
+    }
+
+    .logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--header-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--secondary);
+      background: var(--card-hover-bg);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 80%;
+    }
+     .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dropdown-toggle i {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown:hover .dropdown-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.5rem 0;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1.5rem;
+      color: var(--header-text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--card-hover-bg);
+      color: var(--secondary);
+    }
+
+    .dropdown-menu a::after {
+      display: none;
+    }
+        /* Ranking Section */
+        .ranking-section {
+            flex: 1;
+            padding: 120px 2rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .ranking-title {
+            margin-top: 30px;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--secondary);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        
+        .ranking-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Tabs de Ranking */
+        .ranking-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Cards de Ranking */
+        .ranking-cards {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .ranking-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .ranking-card h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .ranking-list {
+            list-style: none;
+        }
+        
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .ranking-item:hover {
+            background: var(--card-hover-bg);
+            transform: translateX(5px);
+        }
+        
+        .ranking-pos {
+            font-weight: 700;
+            color: var(--secondary);
+            min-width: 30px;
+        }
+        
+        .ranking-name {
+            flex: 1;
+            margin: 0 1rem;
+        }
+        
+        .ranking-score {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .ranking-time {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .ranking-empty {
+            text-align: center;
+            color: var(--gray);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--header-bg);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+           .footer-logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .ranking-title {
+                font-size: 2rem;
+            }
+            
+            .ranking-tabs {
+                flex-direction: column;
+            }
+            
+            .ranking-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+        <div class="logo">
+           <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+        </div>
+        <div class="nav-links">
+            <a href="inicio.html" >Home</a>
+            <a href="sobrenós.html">Sobre</a>
+            <a href="ETEC.html">Etec de Hortolândia</a>
+            <a href="sobreBD.html">Banco de Dados</a>
+           
+            <div class="dropdown">
+                <a class="dropdown-toggle">
+                    Minigame <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="minigame-selecao.html">Minigames</a>
+                    <a href="ranking.html"class="active">Ranking</a>
+                </div>
+            </div>
+            <a href="créditos.html">Créditos</a>
+            <a href="contato.html" >Contato</a>
+        </div>
+        <button class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+</header>
+
+    <section class="ranking-section">
+        <h1 class="ranking-title">Ranking</h1>
+        <p class="ranking-subtitle">Confira os melhores tempos dos minigames!</p>
+        
+        <div class="ranking-tabs">
+            <button class="tab-btn active" onclick="mostrarRanking('quiz')">Quiz</button>
+            <button class="tab-btn" onclick="mostrarRanking('arrastar')">Organize os Conceitos</button>
+        </div>
+        
+        <div class="ranking-cards">
+            <div class="ranking-card">
+                <h3>🏆 Ranking - Quiz de Banco de Dados</h3>
+                <div class="ranking-list" id="ranking-quiz">
+                    <!-- Ranking do quiz será inserido aqui -->
+                </div>
+            </div>
+            
+            <div class="ranking-card">
+                <h3>🎮 Ranking - Organize os Conceitos</h3>
+                <div class="ranking-list" id="ranking-arrastar">
+                    <!-- Ranking do arrastar será inserido aqui -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+             <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+            </div>
+            <div class="footer-links">
+                <a href="inicio.html">Home</a>
+                <a href="sobrenós.html">Sobre</a>
+                <a href="ETEC.html">Etec de Hortolândia</a>
+                <a href="sobreBD.html">Banco de Dados</a>
+                <a href="contato.html">Contato</a>
+                <a href="minigame.html">Quiz</a>
+                <a href="minigame (2).html">Organize</a>
+                <a href="ranking.html">Ranking</a>
+                <a href="créditos.html">Créditos</a>
+            </div>
+            <p class="copyright">
+                ETEC DE HORTOLÂNDIA 2025 - © Todos os direitos reservados.<br>
+                Trabalho acadêmico sem fins lucrativos
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Sistema de Ranking
+        function mostrarRanking(tipo) {
+            // Atualizar tabs ativas
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Carregar dados específicos
+            if (tipo === 'quiz') {
+                carregarRankingQuiz();
+            } else if (tipo === 'arrastar') {
+                carregarRankingArrastar();
+            }
+        }
+        
+        function carregarRankingQuiz() {
+            const ranking = JSON.parse(localStorage.getItem('quizRanking')) || [];
+            const container = document.getElementById('ranking-quiz');
+            
+            if (ranking.length === 0) {
+                container.innerHTML = '<div class="ranking-empty">Nenhum tempo registrado ainda</div>';
+                return;
+            }
+            
+            let html = '';
+            ranking.forEach((score, index) => {
+                const posicao = index + 1;
+                const emoji = posicao === 1 ? '🥇' : posicao === 2 ? '🥈' : posicao === 3 ? '🥉' : `${posicao}º`;
+                const date = new Date(score.date);
+                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+                
+                html += `
+                    <div class="ranking-item">
+                        <div class="ranking-pos">${emoji}</div>
+                        <div class="ranking-name">
+                            <strong>${score.name}</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${formattedDate}</div>
+                        </div>
+                        <div class="ranking-time">${score.time}s</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function carregarRankingArrastar() {
+            const ranking = JSON.parse(localStorage.getItem('arrastarRanking')) || [];
+            const container = document.getElementById('ranking-arrastar');
+            
+            if (ranking.length === 0) {
+                container.innerHTML = '<div class="ranking-empty">Nenhum tempo registrado ainda</div>';
+                return;
+            }
+            
+            let html = '';
+            ranking.forEach((score, index) => {
+                const posicao = index + 1;
+                const emoji = posicao === 1 ? '🥇' : posicao === 2 ? '🥈' : posicao === 3 ? '🥉' : `${posicao}º`;
+                const date = new Date(score.date);
+                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+                
+                html += `
+                    <div class="ranking-item">
+                        <div class="ranking-pos">${emoji}</div>
+                        <div class="ranking-name">
+                            <strong>${score.name}</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${formattedDate}</div>
+                        </div>
+                        <div class="ranking-time">${score.time}s</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Carregar rankings quando a página abrir
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarRankingQuiz();
+            carregarRankingArrastar();
+            
+            // Funcionalidade de alternância de tema
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            const themeIcon = themeToggleBtn.querySelector('i');
+            
+            // Carregar tema salvo do localStorage
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.classList.remove('light-mode');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+
+            // Alternar tema ao clicar no botão
+            themeToggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('light-mode');
+                if (document.documentElement.classList.contains('light-mode')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

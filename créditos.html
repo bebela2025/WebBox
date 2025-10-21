@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créditos - WebBox</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    /* Variáveis para modo escuro (padrão) */
+    :root {
+      --primary: #00aaff;
+      --secondary: #ffae00;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --background: #0f172a;
+      --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --text-color: #f8fafc;
+      --header-text: #f8fafc;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --header-bg: rgba(15, 23, 42, 0.95);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-secondary: #cbd5e1;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(255, 174, 0, 0.1);
+    }
+
+    /* Variáveis para modo claro - TOM AMARELINHO */
+    :root.light-mode {
+      --primary: #0077cc;
+      --secondary: #e68a00;
+      --dark: #ffffff;
+      --light: #1e293b;
+      --gray: #4b5e7a;
+      --success: #0a8759;
+      --background: #f4f6ff;
+      --background-gradient: linear-gradient(135deg, #f4f6ff 0%,#f4f6ff 100%);
+      --text-color: #1e293b;
+      --header-text: #f8fafc;
+      --card-bg:#fafbff;
+      --header-bg:rgba(15, 23, 42, 0.95);
+      --border-color: #cbd5ff;
+      --text-secondary: #4b5e7a;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(230, 138, 0, 0.1);
+    }
+    
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Estilo do botão de alternância */
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--header-text);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--secondary);
+    }
+    
+    /* Header e Navegação */
+
+    /* Dropdown Menu */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-toggle i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.5rem 0;
+    min-width: 180px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.8rem 1.5rem;
+    color: var(--header-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+}
+
+.dropdown-menu a:hover {
+    background: var(--card-hover-bg);
+    color: var(--secondary);
+    transform: none;
+}
+
+.dropdown-menu a::after {
+    display: none;
+}
+    header {
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    
+     .logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    
+    .nav-links a {
+      color: var(--header-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--secondary);
+      background: var(--card-hover-bg);
+    }
+    
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    
+    .nav-links a:hover::after, .nav-links a.active::after {
+      width: 80%;
+    }
+    
+    /* Main Content */
+    .main-content {
+      padding: 120px 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+    }
+    
+    .page-title {
+      margin-top: 30px;
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 3rem;
+      text-align: center;
+      background: var(--text-color);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Team Section */
+    .team-section {
+      margin-bottom: 4rem;
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--secondary);
+      text-align: center;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+    
+    .carousel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .seta {
+      font-size: 2.5rem;
+      color: var(--secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--card-bg);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .seta:hover {
+      transform: scale(1.1);
+      background: var(--card-hover-bg);
+    }
+    
+    .membro {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 3rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
+      height: 500px; /* Altura fixa para uniformidade */
+      width: 500px; /* Largura fixa para uniformidade */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between; /* Distribui o conteúdo uniformemente */
+    }
+    
+    .membro::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+    
+    .membro:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+    
+    .foto {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      border: 3px solid var(--secondary);
+      overflow: hidden;
+      flex-shrink: 0; /* Impede que a foto encolha */
+    }
+    
+    .foto img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .info-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1; /* Permite que este container ocupe o espaço disponível */
+      width: 100%;
+      padding: 1rem 0;
+    }
+    
+    .nome {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+    
+    .cargo {
+      font-size: 1.1rem;
+      color: var(--secondary);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .descricao {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 400px;
+      overflow: hidden; /* Garante que o texto não ultrapasse a caixa */
+      max-height: 120px; /* Altura máxima para a descrição */
+      overflow-y: auto; /* Adiciona scroll se necessário */
+      padding-right: 5px; /* Espaço para a barra de scroll */
+    }
+    
+    /* Estilizando a barra de scroll */
+    .descricao::-webkit-scrollbar {
+      width: 5px;
+    }
+    
+    .descricao::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    
+    .descricao::-webkit-scrollbar-thumb {
+      background: var(--secondary);
+      border-radius: 10px;
+    }
+    
+    /* Footer */
+    footer {
+        background: var(--header-bg);
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-top: auto;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .footer-logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+    }
+
+    
+           .footer-logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+    
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .footer-links a {
+        color: var(--footer-text);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+        color: var(--secondary);
+    }
+    
+    .copyright {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+
+    
+    /* Responsividade */
+    @media (max-width: 968px) {
+      .main-content {
+        padding-top: 100px;
+      }
+      
+      .page-title {
+        font-size: 2.5rem;
+      }
+      
+      .carousel {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .seta {
+        order: 2;
+        margin: 1rem 0;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .membro {
+        padding: 2rem;
+        height: 450px;
+        width: 90%;
+        max-width: 400px;
+      }
+      
+      .foto {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .descricao {
+        max-height: 100px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .membro {
+        height: 420px;
+        padding: 1.5rem;
+      }
+      
+      .descricao {
+        max-height: 90px;
+      }
+    }
+    
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+    
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="logo">
+          <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+        </div>
+        <div class="nav-links">
+          <a href="inicio.html" >Home</a>
+          <a href="sobrenós.html">Sobre</a>
+          <a href="ETEC.html">Etec de Hortolândia</a>
+          <a href="sobreBD.html">Banco de Dados</a>
+          
+          <div class="dropdown">
+              <a class="dropdown-toggle">
+                  Minigame <i class="fas fa-chevron-down"></i>
+              </a>
+              <div class="dropdown-menu">
+                  <a href="minigame-selecao.html">Minigames</a>
+                  <a href="ranking.html">Ranking</a>
+              </div>
+          </div>
+          
+          <a href="créditos.html"class="active">Créditos</a>
+          <a href="contato.html" >Contato</a>
+        </div>
+        <button class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+</header>
+
+  <main class="main-content">
+    <h1 class="page-title fade-in">Nossa Equipe</h1>
+    
+    <!-- Equipe -->
+    <section id="equipe" class="team-section fade-in delay-1">
+      <h2 class="section-title">Equipe de Projeto</h2>
+      <div class="carousel">
+        <span class="seta" onclick="mudarMembro(-1)">&#8592;</span>
+        <div class="membro" id="membro">
+          <div class="foto"><img src="CSS/IMAGENS/fotoisa.png" alt="Isabella Garrones"></div>
+          <div class="info-container">
+            <div class="nome">Isabella Garrones</div>
+            <div class="cargo">Gerente de Projeto</div>
+            <div class="descricao">
+              Coordena as atividades da equipe, acompanha prazos e metas e assegura a execução adequada do projeto em todas as suas etapas.
+            </div>
+          </div>
+        </div>
+        <span class="seta" onclick="mudarMembro(1)">&#8594;</span>
+      </div>
+    </section>
+
+    <!-- Professores -->
+    <section id="professores" class="team-section fade-in delay-2">
+      <h2 class="section-title">Professores Envolvidos</h2>
+      <div class="carousel">
+        <span class="seta" onclick="mudarProfessor(-1)">&#8592;</span>
+        <div class="membro" id="professor">
+          <div class="foto"><img src="CSS/IMAGENS/fotokelly.png" alt="Professora Kelly"></div>
+          <div class="info-container">
+            <div class="nome">Professora Kelly</div>
+            <div class="cargo">Programação Web</div>
+            <div class="descricao">
+              Fornece suporte técnico e pedagógico no desenvolvimento das soluções, orientando a equipe no uso adequado das tecnologias empregadas.
+            </div>
+          </div>
+        </div>
+        <span class="seta" onclick="mudarProfessor(1)">&#8594;</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+             <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+            </div>
+            <div class="footer-links">
+                <a href="inicio.html">Home</a>
+                <a href="sobrenós.html">Sobre</a>
+                <a href="ETEC.html">Etec de Hortolândia</a>
+                <a href="sobreBD.html">Banco de Dados</a>
+                <a href="contato.html">Contato</a>
+                <a href="minigame.html">Minigame</a>
+                <a href="ranking.html">Ranking</a>
+                <a href="créditos.html">Créditos</a>
+            </div>
+            <p class="copyright">
+                ETEC DE HORTOLÂNDIA 2025 - © Todos os direitos reservados.<br>
+                Trabalho acadêmico sem fins lucrativos
+            </p>
+        </div>
+    </footer>
+
+  <!-- Script -->
+  <script>
+    const membros = [
+      { 
+        nome: "Isabella Garrones", 
+        cargo: "Gerente de Projeto", 
+        descricao: "Coordena as atividades da equipe, acompanha prazos e metas e assegura a execução adequada do projeto em todas as suas etapas.", 
+        foto: "CSS/IMAGENS/fotoisa.png" 
+      },
+      { 
+        nome: "Alexandre Rocha", 
+        cargo: "Desenvolvedor Backend", 
+        descricao: "Responsável pela implementação da estrutura interna do sistema, assegurando eficiência, segurança e consistência no processamento dos dados.", 
+        foto: "CSS/IMAGENS/fotoalexandre.png" 
+      },
+      { 
+        nome: "Gabriel Souza", 
+        cargo: "Desenvolvedor Frontend", 
+        descricao: "Atua na concepção da interface do usuário, garantindo clareza, interatividade e usabilidade na navegação do site.", 
+        foto: "CSS/IMAGENS/fotogabriel.png"
+      },
+      { 
+        nome: "Heloisa Teodoro", 
+        cargo: "Analista de Sistema", 
+        descricao: "Realiza o levantamento de requisitos e a análise de soluções, contribuindo para que o projeto esteja alinhado às necessidades propostas.", 
+        foto: "CSS/IMAGENS/fotoheloisa.png" 
+      }
+    ];
+
+    let indiceAtual = 0;
+    const membroDiv = document.getElementById("membro");
+    
+    function atualizarMembro() {
+      membroDiv.querySelector(".nome").textContent = membros[indiceAtual].nome;
+      membroDiv.querySelector(".cargo").textContent = membros[indiceAtual].cargo;
+      membroDiv.querySelector(".descricao").textContent = membros[indiceAtual].descricao;
+      membroDiv.querySelector(".foto img").src = membros[indiceAtual].foto;
+      membroDiv.querySelector(".foto img").alt = membros[indiceAtual].nome;
+    }
+    
+    function mudarMembro(direcao) {
+      indiceAtual += direcao;
+      if (indiceAtual < 0) indiceAtual = membros.length - 1;
+      if (indiceAtual >= membros.length) indiceAtual = 0;
+      atualizarMembro();
+    }
+
+    const professores = [
+      { 
+        nome: "Professora Kelly", 
+        cargo: "Programação Web", 
+        descricao: "Fornece suporte técnico e pedagógico no desenvolvimento das soluções, orientando a equipe no uso adequado das tecnologias empregadas.", 
+        foto: "CSS/IMAGENS/fotokelly.png" 
+      },
+      { 
+        nome: "Professora Priscila Batista", 
+        cargo: "Banco de Dados", 
+        descricao: "Graduação em Tecnologia em Processamento de Dados, Graduação em Pedagogia, Licenciatura em Informática, Especialização em Informática em Educação, Educação Especial e Metodologias Ativas.", 
+        foto: "CSS/IMAGENS/fotopriscila.png" 
+      },
+      { 
+        nome: "Professora Fernanda", 
+        cargo: "Análise de Projetos e Sistema", 
+        descricao: "Análise De Sistemas e Mestre em Educação", 
+        foto: "CSS/IMAGENS/fotofernanda.png" 
+      },
+      {
+        nome: "Professora Juliana", 
+        cargo: "Design Digital", 
+        descricao: "Bacharel em Comunicação Social (Habilitação em Publicidade e Propaganda) Mestre em Linguagem, Mídia e Arte.", 
+        foto: "CSS/IMAGENS/fotojuliana.jpeg" 
+      }
+    ];
+
+    let indiceProfessor = 0;
+    const professorDiv = document.getElementById("professor");
+    
+    function atualizarProfessor() {
+      professorDiv.querySelector(".nome").textContent = professores[indiceProfessor].nome;
+      professorDiv.querySelector(".cargo").textContent = professores[indiceProfessor].cargo;
+      professorDiv.querySelector(".descricao").textContent = professores[indiceProfessor].descricao;
+      professorDiv.querySelector(".foto img").src = professores[indiceProfessor].foto;
+      professorDiv.querySelector(".foto img").alt = professores[indiceProfessor].nome;
+    }
+    
+    function mudarProfessor(direcao) {
+      indiceProfessor += direcao;
+      if (indiceProfessor < 0) indiceProfessor = professores.length - 1;
+      if (indiceProfessor >= professores.length) indiceProfessor = 0;
+      atualizarProfessor();
+    }
+
+    // Animação de entrada suave para elementos
+    document.addEventListener('DOMContentLoaded', function() {
+      const fadeElements = document.querySelectorAll('.fade-in');
+      
+      const fadeInObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      fadeElements.forEach(el => {
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        fadeInObserver.observe(el);
+      });
+
+      // Funcionalidade de alternância de tema
+      const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+      const themeIcon = themeToggleBtn.querySelector('i');
+      
+      // Carregar tema salvo do localStorage
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      }
+
+      // Alternar tema ao clicar no botão
+      themeToggleBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('light-mode');
+        if (document.documentElement.classList.contains('light-mode')) {
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+          localStorage.setItem('theme', 'light');
+        } else {
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-moon');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+      
+    });
+  </script>
+</body>
+</html>

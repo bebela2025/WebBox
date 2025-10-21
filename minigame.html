@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Banco de Dados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Variáveis para modo escuro (padrão) */
+       :root {
+      --primary: #00aaff;
+      --secondary: #ffae00;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --background: #0f172a;
+      --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --text-color: #f8fafc;
+      --header-text: #f8fafc;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --header-bg: rgba(15, 23, 42, 0.95);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-secondary: #cbd5e1;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(255, 174, 0, 0.1);
+    }
+
+    /* Variáveis para modo claro - TOM AMARELINHO */
+    :root.light-mode {
+      --primary: #0077cc;
+      --secondary: #e68a00;
+      --dark: #ffffff;
+      --light: #1e293b;
+      --gray: #4b5e7a;
+      --success: #0a8759;
+    --background: #f4f6ff;
+      --background-gradient: linear-gradient(135deg, #f4f6ff 0%,#f4f6ff 100%);
+      --text-color: #1e293b;
+      --header-text: #f8fafc;
+      --card-bg:#fafbff;
+      --header-bg:rgba(15, 23, 42, 0.95);
+      --border-color: #cbd5ff;
+      --text-secondary: #4b5e7a;
+      --footer-text: #94a3b8;
+      --card-hover-bg: rgba(230, 138, 0, 0.1);
+    }
+
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Estilo do botão de alternância */
+    .theme-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--header-text);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--secondary);
+    }
+
+    /* Header e Navegação */
+    header {
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-color); 
+     
+    
+    }
+
+    .logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--header-text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--secondary);
+      background: var(--card-hover-bg);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--secondary);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 80%;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dropdown-toggle i {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .dropdown:hover .dropdown-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.5rem 0;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1.5rem;
+      color: var(--header-text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .dropdown-menu a:hover {
+      background: var(--card-hover-bg);
+      color: var(--secondary);
+    }
+
+    .dropdown-menu a::after {
+      display: none;
+    }
+        
+        /* Resto do CSS original da página... */
+        /* Quiz Container */
+        .quiz-wrapper {
+            flex: 1;
+            padding: 120px 2rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .quiz-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        
+        .quiz-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .quiz-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        /* Tela de Início */
+        .start-screen {
+            padding: 2rem;
+        }
+        
+        .start-title {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .start-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .instructions {
+            background: var(--background);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            text-align: justify;
+        }
+        
+        .instructions h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .instructions li::before {
+            content: '-';
+            position: absolute;
+            left: 0;
+        }
+        
+        /* Quiz Stats */
+        .quiz-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            background:var(--background);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .time-warning {
+            color: var(--error);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Question Area */
+        .question-area {
+            margin-bottom: 2rem;
+        }
+        
+        .question-number {
+            font-size: 1rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .question {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+        
+        /* Answers */
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .answer {
+            background: var(--background);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .answer:hover {
+            background: var(--background);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .answer.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+        }
+        
+        .answer.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--error);
+        }
+        
+        .answer.selected {
+            background: rgba(0, 170, 255, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .answer.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .answer.disabled:hover {
+            transform: none;
+            background: rgba(15, 23, 42, 0.7);
+            border-color: var(--border-color);
+        }
+        
+        /* Buttons */
+        .quiz-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(90deg, var(--secondary) 0%, #ffc233 100%);
+            box-shadow: 0 4px 15px rgba(255, 174, 0, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(255, 174, 0, 0.4);
+        }
+        
+        /* Results */
+        .results {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: var(--background);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .results.hidden {
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .score-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 1rem 0;
+        }
+        
+        .message {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .correct-answers {
+            text-align: left;
+            margin-top: 2rem;
+        }
+        
+        .correct-answers h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .answer-review {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #10b981;
+        }
+        
+        .answer-review.incorrect {
+            border-left-color: var(--error);
+        }
+        
+        .answer-review-question {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .answer-review-correct {
+            color: #10b981;
+            font-size: 0.9rem;
+        }
+        
+        /* Mensagem de Nome Integrada */
+       /* Mensagem de Nome Integrada */
+        .name-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .name-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .name-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .name-overlay.active .name-card {
+            transform: scale(1);
+        }
+
+        .name-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .name-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            animation: bounce 2s infinite;
+        }
+
+        .name-title {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            background:  var(--secondary) ;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .name-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .name-input-container {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .name-label {
+            display: block;
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--background);
+            color: var(--text-color);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .name-input.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+        }
+
+        .name-hint {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .name-error {
+            color: var(--error);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .name-error.show {
+            display: block;
+        }
+
+        .name-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .name-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            min-width: 140px;
+        }
+
+        .name-btn-primary {
+            background: linear-gradient(90deg, var(--primary) 0%, #33bbff 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+        }
+
+        .name-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+        }
+
+        .name-btn-secondary {
+            background: linear-gradient(90deg, var(--secondary) 0%, #ffc233 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 174, 0, 0.3);
+        }
+
+        .name-btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 174, 0, 0.4);
+        }
+
+        .name-btn-outline {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .name-btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+        }
+
+        .name-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .name-footer-text {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+       footer {
+            background: var(--header-bg);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+           .footer-logo img {
+      color: var(--secondary);
+      font-size: 1.8rem;  
+      max-width: 200px;
+      max-height: 200px;
+    }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Estados ocultos */
+        .hidden {
+            display: none;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--header-bg);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 968px) {
+            .quiz-wrapper {
+                padding-top: 100px;
+            }
+            
+            .quiz-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .quiz-title {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--text-color);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .quiz-title {
+                font-size: 1.8rem;
+            }
+            
+            .question {
+                font-size: 1.3rem;
+            }
+            
+            .quiz-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .quiz-buttons {
+                flex-direction: column;
+            }
+
+            .name-buttons {
+                flex-direction: column;
+            }
+
+            .name-btn {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+    </style>
+</head>
+<body>
+ <header>
+    <nav class="navbar">
+        <div class="logo">
+        <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+        </div>
+        <div class="nav-links">
+            <a href="inicio.html">Home</a>
+            <a href="sobrenós.html">Sobre</a>
+            <a href="ETEC.html">Etec de Hortolândia</a>
+            <a href="sobreBD.html">Banco de Dados</a>
+          
+            <div class="dropdown">
+                <a class="dropdown-toggle" >
+                    Minigame <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="minigame-selecao.html"class="active">Minigames</a>
+                    <a href="ranking.html">Ranking</a>
+                </div>
+            </div>
+            <a href="créditos.html">Créditos</a>
+            <a href="contato.html" >Contato</a>
+        </div>
+        <button class="theme-toggle-btn" aria-label="Alternar modo claro/escuro">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+</header>
+
+    <div class="quiz-wrapper">
+        <div class="quiz-container fade-in">
+            <!-- Tela de Início -->
+            <div id="start-screen">
+                <div class="start-screen">
+                    <h1 class="start-title">Quiz - Banco de Dados</h1>
+                    <p class="start-description">
+                        Teste seus conhecimentos sobre Banco de Dados com 10 perguntas baseadas no conteúdo do site!
+                        O tempo conta a partir de agora - quanto mais rápido você responder tudo corretamente, melhor!
+                    </p>
+                    
+                    <div class="instructions">
+                        <h3>Como Jogar:</h3>
+                        <ul>
+                            <li>10 perguntas sobre Banco de Dados</li>
+                            <li>4 alternativas por pergunta</li>
+                            <li>Tempo começa quando você inicia</li>
+                            <li>Respostas verificadas automaticamente</li>
+                            <li>Ranking baseado no tempo para completar tudo corretamente</li>
+                            <li>Revise suas respostas ao final</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn btn-secondary" id="start-btn">
+                        <i class="fas fa-play"></i> Começar Quiz
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quiz (inicialmente oculto) -->
+            <div id="quiz-screen" class="hidden">
+                <h1 class="quiz-title">Quiz - Banco de Dados</h1>
+                <p class="quiz-subtitle">Teste seus conhecimentos sobre Banco de Dados</p>
+                
+                <div class="quiz-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="score">0</div>
+                        <div class="stat-label">Pontuação</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="question-count">1/10</div>
+                        <div class="stat-label">Pergunta</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="time">0</div>
+                        <div class="stat-label">Segundos</div>
+                    </div>
+                </div>
+                
+                <div class="question-area">
+                    <div class="question-number" id="question-number">Pergunta 1 de 10</div>
+                    <div class="question" id="question">
+                        <!-- Pergunta será inserida via JavaScript -->
+                    </div>
+                    
+                    <div class="answers" id="answers">
+                        <!-- Respostas serão inseridas via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="quiz-buttons">
+                    <button class="btn" id="next-btn" disabled>Próxima Pergunta</button>
+                    <button class="btn btn-secondary hidden" id="results-btn">Ver Resultados</button>
+                </div>
+            </div>
+            
+            <!-- Resultados (inicialmente oculto) -->
+            <div class="results hidden" id="results">
+                <h2 class="results-title" id="results-title">Quiz Concluído!</h2>
+                <div class="score-display" id="final-score">0/10</div>
+                <p class="message" id="result-message">Parabéns pelo resultado!</p>
+                <p class="message" id="time-message">Tempo total: 0 segundos</p>
+                
+                <div class="correct-answers" id="correct-answers">
+                    <!-- Revisão de respostas será inserida via JavaScript -->
+                </div>
+                
+                <div class="quiz-buttons">
+                    <button class="btn" id="restart-btn">Fazer Quiz Novamente</button>
+                    <button class="btn btn-secondary" id="menu-btn">Voltar ao Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensagem de Nome Integrada -->
+    <div id="name-overlay" class="name-overlay">
+        <div class="name-card">
+            <div class="name-icon">🏆</div>
+            <h2 class="name-title">Parabéns!</h2>
+            <p class="name-subtitle">Você completou em <span id="final-time-display">0</span> segundos!</p>
+            
+            <div class="name-input-container">
+                <label for="playerName" class="name-label">Digite seu nome para o ranking</label>
+                <input type="text" id="playerName" class="name-input" placeholder="Seu nome..." maxlength="20">
+                <div class="name-hint">Máximo de 20 caracteres</div>
+                <div class="name-error" id="name-error">Por favor, digite um nome válido</div>
+            </div>
+            
+            <div class="name-buttons">
+                <button class="name-btn name-btn-primary" id="saveNameBtn">
+                    <i class="fas fa-trophy"></i> Salvar
+                </button>
+                <button class="name-btn name-btn-secondary" id="skipNameBtn">
+                    <i class="fas fa-eye"></i> Ver Ranking
+                </button>
+                <button class="name-btn name-btn-outline" id="playAgainBtn">
+                    <i class="fas fa-redo"></i> Jogar Novamente
+                </button>
+            </div>
+            
+            <div class="name-footer">
+                <p class="name-footer-text">
+                    <i class="fas fa-info-circle"></i> Seu nome será exibido publicamente
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+             <a href="inicio.html"><img src="CSS/IMAGENS/LOGO.png" alt="WebBox"></a>
+            </div>
+            <div class="footer-links">
+                <a href="inicio.html">Home</a>
+                <a href="sobrenós.html">Sobre</a>
+                <a href="ETEC.html">Etec de Hortolândia</a>
+                <a href="sobreBD.html">Banco de Dados</a>
+                <a href="contato.html">Contato</a>
+                <a href="minigame-selecao.html">Minigame</a>
+                <a href="créditos.html">Créditos</a>
+            </div>
+            <p class="copyright">
+                ETEC DE HORTOLÂNDIA 2025 - © Todos os direitos reservados.<br>
+                Trabalho acadêmico sem fins lucrativos
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Dados do quiz - Baseado no conteúdo do site
+        const quizQuestions = [
+            {
+                question: "O que é um Banco de Dados?",
+                answers: [
+                    "Um programa de edição de texto",
+                    "Um sistema estruturado para armazenar e gerenciar informações",
+                    "Um tipo de rede social",
+                    "Um aplicativo de mensagens"
+                ],
+                correct: 1,
+                explanation: "Um banco de dados é um sistema estruturado para armazenar, gerenciar e manipular grandes volumes de informações de forma organizada."
+            },
+            {
+                question: "Qual a principal função de um SGBD?",
+                answers: [
+                    "Criar interfaces gráficas",
+                    "Controlar acesso, armazenamento e manipulação de dados",
+                    "Desenvolver aplicativos móveis",
+                    "Fazer backup automático de fotos"
+                ],
+                correct: 1,
+                explanation: "O Sistema Gerenciador de Banco de Dados (SGBD) controla o acesso, armazenamento e manipulação dos dados, garantindo segurança e integridade."
+            },
+            {
+                question: "No modelo relacional, os dados são organizados em:",
+                answers: [
+                    "Pastas e arquivos",
+                    "Listas encadeadas",
+                    "Tabelas com linhas e colunas",
+                    "Gráficos e diagramas"
+                ],
+                correct: 2,
+                explanation: "No modelo relacional, os dados são organizados em tabelas compostas por linhas (registros) e colunas (campos)."
+            },
+            {
+                question: "O que é uma Chave Primária?",
+                answers: [
+                    "Uma senha de acesso ao banco",
+                    "Um campo que identifica unicamente cada registro",
+                    "Um tipo de arquivo de backup",
+                    "Um comando SQL avançado"
+                ],
+                correct: 1,
+                explanation: "A chave primária é um campo que identifica exclusivamente cada registro em uma tabela, evitando duplicações."
+            },
+            {
+                question: "Qual destes NÃO é um banco de dados relacional?",
+                answers: [
+                    "MySQL",
+                    "PostgreSQL",
+                    "MongoDB",
+                    "Oracle"
+                ],
+                correct: 2,
+                explanation: "MongoDB é um banco de dados não relacional (NoSQL), enquanto os outros são bancos relacionais."
+            },
+            {
+                question: "O que caracteriza o Big Data?",
+                answers: [
+                    "Poucos dados mas muito importantes",
+                    "Grande volume, velocidade e variedade de dados",
+                    "Dados apenas numéricos",
+                    "Informações apenas de redes sociais"
+                ],
+                correct: 1,
+                explanation: "Big Data se caracteriza pelos 5 Vs: Volume, Velocidade, Variedade, Veracidade e Valor."
+            },
+            {
+                question: "Qual é a função da Chave Estrangeira?",
+                answers: [
+                    "Criptografar dados sensíveis",
+                    "Estabelecer relacionamentos entre tabelas",
+                    "Acelerar consultas simples",
+                    "Fazer backup automático"
+                ],
+                correct: 1,
+                explanation: "A chave estrangeira conecta informações entre diferentes tabelas, estabelecendo relacionamentos no modelo relacional."
+            },
+            {
+                question: "O que é Mineração de Dados?",
+                answers: [
+                    "Extrair minerais usando computadores",
+                    "Processo de explorar dados para descobrir padrões e tendências",
+                    "Deletar dados antigos",
+                    "Compactar arquivos de banco de dados"
+                ],
+                correct: 1,
+                explanation: "Mineração de dados é o processo de explorar grandes volumes de dados para descobrir padrões, tendências e informações úteis."
+            },
+            {
+                question: "Qual a diferença entre Registro e Campo?",
+                answers: [
+                    "São a mesma coisa",
+                    "Registro é uma linha, Campo é uma coluna",
+                    "Registro é para texto, Campo é para números",
+                    "Não há diferença significativa"
+                ],
+                correct: 1,
+                explanation: "Registro representa uma linha completa de informações, enquanto Campo representa uma coluna específica (atributo)."
+            },
+            {
+                question: "O que representa o MER?",
+                answers: [
+                    "Modelo de Entidade-Relacionamento para modelagem gráfica de dados",
+                    "Método de Encriptação Rápida",
+                    "Monitoramento de Estruturas de Rede",
+                    "Manipulação Eficiente de Registros"
+                ],
+                correct: 0,
+                explanation: "O Modelo Entidade-Relacionamento (MER) é uma forma de modelar graficamente os dados, destacando entidades, atributos e relacionamentos."
+            }
+        ];
+
+        // Variáveis do quiz
+        let currentQuestion = 0;
+        let score = 0;
+        let quizStarted = false;
+        let timeElapsed = 0; // Agora o tempo começa em 0 e sobe
+        let timer;
+        let userAnswers = [];
+        let selectedAnswer = null;
+        let startTime = 0;
+        let allCorrect = false;
+
+        // Elementos do DOM
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const results = document.getElementById('results');
+        const questionElement = document.getElementById('question');
+        const questionNumberElement = document.getElementById('question-number');
+        const questionCountElement = document.getElementById('question-count');
+        const answersElement = document.getElementById('answers');
+        const scoreElement = document.getElementById('score');
+        const timeElement = document.getElementById('time');
+        const nextButton = document.getElementById('next-btn');
+        const resultsButton = document.getElementById('results-btn');
+        const finalScore = document.getElementById('final-score');
+        const resultMessage = document.getElementById('result-message');
+        const timeMessage = document.getElementById('time-message');
+        const resultsTitle = document.getElementById('results-title');
+        const correctAnswersElement = document.getElementById('correct-answers');
+        const restartButton = document.getElementById('restart-btn');
+        const menuButton = document.getElementById('menu-btn');
+        const startButton = document.getElementById('start-btn');
+
+        // ==================== MENSAGEM DE NOME ====================
+
+        const nameOverlay = document.getElementById('name-overlay');
+        const playerNameInput = document.getElementById('playerName');
+        const nameError = document.getElementById('name-error');
+        const saveNameBtn = document.getElementById('saveNameBtn');
+        const skipNameBtn = document.getElementById('skipNameBtn');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const finalTimeDisplay = document.getElementById('final-time-display');
+
+        // ==================== FUNÇÕES DO QUIZ ====================
+
+        // Iniciar o quiz
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizStarted = true;
+            currentQuestion = 0;
+            score = 0;
+            timeElapsed = 0;
+            userAnswers = [];
+            selectedAnswer = null;
+            
+            // Iniciar o cronômetro (agora conta para cima)
+            startTime = Date.now();
+            timer = setInterval(updateTimer, 1000);
+            
+            // Atualizar a interface
+            updateScore();
+            updateQuestion();
+            updateTime();
+        }
+
+        // Atualizar o cronômetro
+        function updateTimer() {
+            if (quizStarted) {
+                timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+                updateTime();
+            }
+        }
+
+        // Atualizar o tempo na tela
+        function updateTime() {
+            timeElement.textContent = timeElapsed;
+        }
+
+        // Atualizar a pontuação na tela
+        function updateScore() {
+            scoreElement.textContent = score;
+        }
+
+        // Atualizar a pergunta atual
+        function updateQuestion() {
+            const question = quizQuestions[currentQuestion];
+            
+            questionNumberElement.textContent = `Pergunta ${currentQuestion + 1} de ${quizQuestions.length}`;
+            questionCountElement.textContent = `${currentQuestion + 1}/${quizQuestions.length}`;
+            questionElement.textContent = question.question;
+            
+            // Limpar respostas anteriores
+            answersElement.innerHTML = '';
+            
+            // Adicionar novas respostas
+            question.answers.forEach((answer, index) => {
+                const answerElement = document.createElement('div');
+                answerElement.classList.add('answer');
+                answerElement.textContent = answer;
+                
+                answerElement.addEventListener('click', () => selectAnswer(index));
+                
+                answersElement.appendChild(answerElement);
+            });
+            
+            // Resetar botão próxima pergunta
+            nextButton.disabled = true;
+            nextButton.classList.remove('hidden');
+            resultsButton.classList.add('hidden');
+            
+            // Resetar seleção
+            selectedAnswer = null;
+        }
+
+        // Selecionar uma resposta
+        function selectAnswer(index) {
+            if (selectedAnswer !== null) return;
+            
+            selectedAnswer = index;
+            const answerElements = document.querySelectorAll('.answer');
+            
+            // Marcar a resposta selecionada
+            answerElements[index].classList.add('selected');
+            
+            // Desabilitar todas as respostas
+            answerElements.forEach(element => {
+                element.classList.add('disabled');
+            });
+            
+            // Verificar se a resposta está correta
+            const question = quizQuestions[currentQuestion];
+            const isCorrect = index === question.correct;
+            
+            if (isCorrect) {
+                answerElements[index].classList.add('correct');
+                score++;
+                updateScore();
+            } else {
+                answerElements[index].classList.add('incorrect');
+                answerElements[question.correct].classList.add('correct');
+            }
+            
+            // Armazenar a resposta do usuário
+            userAnswers.push({
+                questionIndex: currentQuestion,
+                selected: index,
+                correct: isCorrect
+            });
+            
+            // Habilitar o botão próxima pergunta
+            nextButton.disabled = false;
+            
+            // Verificar se é a última pergunta
+            if (currentQuestion === quizQuestions.length - 1) {
+                nextButton.classList.add('hidden');
+                resultsButton.classList.remove('hidden');
+            }
+        }
+
+        // Próxima pergunta
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < quizQuestions.length) {
+                updateQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Mostrar resultados
+        function showResults() {
+            clearInterval(timer);
+            quizScreen.classList.add('hidden');
+            results.classList.remove('hidden');
+            
+            // Verificar se todas as respostas estão corretas
+            allCorrect = userAnswers.every(answer => answer.correct);
+            
+            // Atualizar resultados
+            finalScore.textContent = `${score}/${quizQuestions.length}`;
+            timeMessage.textContent = `Tempo total: ${timeElapsed} segundos`;
+            
+            if (score === quizQuestions.length) {
+                resultsTitle.textContent = "Perfeito! 🎉";
+                resultMessage.textContent = "Você acertou todas as perguntas!";
+            } else if (score >= quizQuestions.length * 0.7) {
+                resultsTitle.textContent = "Muito Bom! 👍";
+                resultMessage.textContent = "Você tem um bom conhecimento sobre Banco de Dados!";
+            } else if (score >= quizQuestions.length * 0.5) {
+                resultsTitle.textContent = "Bom Trabalho! 👏";
+                resultMessage.textContent = "Você conhece o básico sobre Banco de Dados!";
+            } else {
+                resultsTitle.textContent = "Continue Estudando! 📚";
+                resultMessage.textContent = "Revise o conteúdo e tente novamente!";
+            }
+            
+            // Mostrar revisão de respostas
+            showAnswerReview();
+            
+            // Mostrar mensagem de nome apenas se todas as respostas estiverem corretas
+            if (allCorrect) {
+                setTimeout(() => {
+                    showNameOverlay();
+                }, 1500);
+            }
+        }
+
+        // Mostrar revisão de respostas
+        function showAnswerReview() {
+            correctAnswersElement.innerHTML = '<h3>Revisão de Respostas</h3>';
+            
+            userAnswers.forEach((userAnswer, index) => {
+                const question = quizQuestions[userAnswer.questionIndex];
+                const reviewElement = document.createElement('div');
+                reviewElement.classList.add('answer-review');
+                
+                if (!userAnswer.correct) {
+                    reviewElement.classList.add('incorrect');
+                }
+                
+                reviewElement.innerHTML = `
+                    <div class="answer-review-question">${index + 1}. ${question.question}</div>
+                    <div>Sua resposta: ${question.answers[userAnswer.selected]}</div>
+                    <div class="answer-review-correct">Resposta correta: ${question.answers[question.correct]}</div>
+                    <div class="answer-review-explanation">${question.explanation}</div>
+                `;
+                
+                correctAnswersElement.appendChild(reviewElement);
+            });
+        }
+
+        // Reiniciar o quiz
+        function restartQuiz() {
+            results.classList.add('hidden');
+            startQuiz();
+        }
+
+        // Voltar ao menu
+        function goToMenu() {
+            results.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            quizStarted = false;
+        }
+
+        // ==================== FUNÇÕES DA MENSAGEM DE NOME ====================
+
+        // Mostrar overlay de nome
+        function showNameOverlay() {
+            finalTimeDisplay.textContent = timeElapsed;
+            nameOverlay.classList.add('active');
+            playerNameInput.value = '';
+            nameError.classList.remove('show');
+        }
+
+        // Esconder overlay de nome
+        function hideNameOverlay() {
+            nameOverlay.classList.remove('active');
+        }
+
+        // Salvar nome no ranking
+        function saveToRanking() {
+            const playerName = playerNameInput.value.trim();
+            
+            if (!playerName) {
+                nameError.classList.add('show');
+                playerNameInput.classList.add('error');
+                return;
+            }
+            
+            // Limpar erro
+            nameError.classList.remove('show');
+            playerNameInput.classList.remove('error');
+            
+            // Salvar no localStorage
+            const rankingEntry = {
+                name: playerName,
+                time: timeElapsed,
+                date: new Date().toISOString(),
+                game: 'quiz'
+            };
+            
+            let ranking = JSON.parse(localStorage.getItem('quizRanking') || '[]');
+            ranking.push(rankingEntry);
+            
+            // Ordenar por tempo (menor tempo primeiro)
+            ranking.sort((a, b) => a.time - b.time);
+            
+            // Manter apenas os top 10
+            ranking = ranking.slice(0, 10);
+            
+            localStorage.setItem('quizRanking', JSON.stringify(ranking));
+            
+            // Redirecionar para a página de ranking
+            window.location.href = 'ranking.html';
+        }
+
+        // Pular salvamento e ver ranking
+        function skipToRanking() {
+            hideNameOverlay();
+            window.location.href = 'ranking.html';
+        }
+
+        // Jogar novamente
+        function playAgain() {
+            hideNameOverlay();
+            restartQuiz();
+        }
+
+        // ==================== EVENT LISTENERS ====================
+
+        // Quiz
+        startButton.addEventListener('click', startQuiz);
+        nextButton.addEventListener('click', nextQuestion);
+        resultsButton.addEventListener('click', showResults);
+        restartButton.addEventListener('click', restartQuiz);
+        menuButton.addEventListener('click', goToMenu);
+
+        // Mensagem de nome
+        saveNameBtn.addEventListener('click', saveToRanking);
+        skipNameBtn.addEventListener('click', skipToRanking);
+        playAgainBtn.addEventListener('click', playAgain);
+
+        // Validação do input de nome
+        playerNameInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                nameError.classList.remove('show');
+                this.classList.remove('error');
+            }
+        });
+
+        // Tecla Enter no input de nome
+        playerNameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveToRanking();
+            }
+        });
+
+        // Funcionalidade de alternância de tema
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            const themeIcon = themeToggleBtn.querySelector('i');
+            
+            // Carregar tema salvo do localStorage
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                document.documentElement.classList.remove('light-mode');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+
+            // Alternar tema ao clicar no botão
+            themeToggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('light-mode');
+                if (document.documentElement.classList.contains('light-mode')) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
